@@ -22,7 +22,7 @@ public class KapgelHeuristic {
         long cputime = System.currentTimeMillis();
         long routetime = 0, rtime;
 //Define parameters of the algorithm
-        String file = "C:\\Users\\IBM_ADMIN\\Desktop\\Kapgel\\r01"; //Name of data file
+        String file = "C:\\Users\\IBM_ADMIN\\Desktop\\Kapgel\\data\\d01"; //Name of data file
         final int M = 50; //Population size
         final int G = 15000; //Number of generations, iterations
         int Z = (int) M / 10; //Worst individuals in population
@@ -235,6 +235,9 @@ public class KapgelHeuristic {
         }//for i ends
         cputime = System.currentTimeMillis() - cputime;
 //print solution
+
+
+
         int small = findSmall(crowdcost, M);
         byte[] line = new byte[stops / 2 + 1];
         float[] ddist = new float[car];
@@ -254,6 +257,10 @@ public class KapgelHeuristic {
             int[] order = ro.getRoute();
             for (int k3 = 0; k3 < order.length; k3++) {
                 sum = sum + order[k3];
+                            for(int i=0; i<order.length; i++){
+            System.out.println(order[i]);
+            }
+                            
             }
             int ld = 0;
             int[] load = ro.getLoad();
@@ -265,7 +272,7 @@ public class KapgelHeuristic {
             System.out.print(" sum " + ld);
             System.out.print(" " + prufa);
             ddist[kk] = ro.getDist();
-            float[] ride = ro.getRidetime();
+            float[] ride = ro.getRidetime();           
             for (int je = 0; je < ride.length; je++) {
                 if (je % 2 == 1) {
                     samtalsridet[kk] = samtalsridet[kk] + ride[je];
@@ -290,9 +297,10 @@ public class KapgelHeuristic {
         float samtals = 0;
         System.out.println("Distance for");
         for (int tel = 0; tel < ddist.length; tel++) {
-//System.out.print(" route "+tel+" is "+ddist[tel]);
+System.out.print(" route "+tel+" is "+ddist[tel]);
             samtals = samtals + ddist[tel];
         }
+                
         System.out.println();
         System.out.print(" dist " + samtals);
         System.out.println();
@@ -342,12 +350,13 @@ public class KapgelHeuristic {
         System.out.print(" cost " + crowdcost[small]);
         System.out.print(" CPU " + cputime);
         System.out.println("min: " + cputime / 60000);
-        System.out.print(" Routingrunningtime " + routetime);
+        System.out.print(" Routing running time " + routetime);
         System.out.println("Difference: " + (cputime - routetime) + " or ca "
                 + ((cputime - routetime) * 100 / cputime) + "%");
         System.out.println("Number of customers is " + stops / 2);
-        System.out.println();
 
+        System.out.println();
+        
     }
 
     //print solution
@@ -362,6 +371,7 @@ public class KapgelHeuristic {
         small = findSmall(cr, M);
         System.out.println(" , " + crowdcost[small]);
         System.out.println();
+        
     }
 
 //finds smallest element in an array vec and returns
@@ -436,7 +446,7 @@ public class KapgelHeuristic {
         return ((int) (Math.random() * L));
     }
 
-    class Help {
+    public static class Help {
 
         int[] bubble(float[] matrix) {
             int[] place = new int[matrix.length];
@@ -459,7 +469,7 @@ public class KapgelHeuristic {
         }//bubble ends
     }
 
-    class Route26042 {
+    public static class Route26042 {
 
         private int[] v; //customers in cluster
         private int[] cs; //customers served
@@ -484,6 +494,7 @@ public class KapgelHeuristic {
 
         public Route26042(String file) {
             filename = file;
+
         }
 
         public void giveOrder(int[] order, int nn, float begin) {
@@ -495,16 +506,20 @@ public class KapgelHeuristic {
             ord = order;
             cun = order.length / 2 - 1;
             n = nn;
-        }
 
+        }
+  
         public int[] getRoute() {
             return (ord);
+            
         }
 
         public float getFinalcost() {
             if (ord.length > 2) {
                 float finalcost = ordcost(ord);
-                return (finalcost);
+                //System.out.println("finalcost " + finalcost);
+                return (finalcost); 
+                
             } else {
                 return (0);
             }
@@ -517,6 +532,7 @@ public class KapgelHeuristic {
         public float[] getTime() {
             if (ord.length > 2) {
                 float cost = getFinalcost();
+                System.out.println("Cost : "+cost);
             }
             return (ctime);
         }
@@ -537,6 +553,7 @@ public class KapgelHeuristic {
                     out[i]
                             = ctime[i] - r.getUTimeWindow(ord[i]) - r.getServicetime(ord[i]);
                 }
+                
             }//for ends
             return (out);
         }
@@ -576,10 +593,13 @@ public class KapgelHeuristic {
             float dist = 0;
             for (int i = 0; i < ord.length - 1; i++) {
                 dist = dist + d.getDistance(ord[i], ord[i + 1]);
-            }
+                }            
             return (dist);
+            
         }
-
+    
+        
+        
         public void getCustomers(byte[] clu, int MM) {
 //clu inholds customers to be routed
             w2 = MM;
@@ -1015,6 +1035,7 @@ public class KapgelHeuristic {
             for (int j = 0; j < wtime.length; j++) {
                 wtime[j] = 0;
             }
+            
 //update ctime, wtime, load for the route found
             for (int i = 1; i < order.length; i++) {
                 nnode = order[i];
@@ -1044,7 +1065,7 @@ public class KapgelHeuristic {
                 if (ctime[i - 1] + ttime < r.getLTimeWindow(order[i])) {
                     twviol = twviol + r.getLTimeWindow(order[i]) - (ctime[i - 1] + ttime);
                 }
-//customers ride time violations caluclated,
+//customers ride time violations calculated,
 //if customer has been in the car for longer than max
 //ride time sais then ride time viol > 0, service times of
 //customer not included, i.e. nnode is a drop off location
@@ -1081,6 +1102,7 @@ public class KapgelHeuristic {
             return (w1 * routedur + w2 * twviol + w3 * rideviol
                     + w4 * routeviol + w5 * xride + w6 * wt + w7 * getDist());
         }//ordcost ends
+        
 // ------------------------- RETIME -------------------------//
 //Recalculate starting time so that time windows are not violated
 
@@ -1105,6 +1127,8 @@ public class KapgelHeuristic {
             }//for ends
             return (ctime[0]);
         }
+        
+
 // -------------------------- WAIT -----------------------//
 //moves waiting times to nodes where there are fewer customers
 //in the vehicle
@@ -1169,7 +1193,7 @@ public class KapgelHeuristic {
         }//uvisit ends
     }//class ends
 
-    class Request {
+    public static class Request {
 
         int[][] req;
         float[][] coo;
@@ -1241,7 +1265,7 @@ public class KapgelHeuristic {
         }//getuTimeWindow ends
     }//Request class ends
 
-    public class Data {
+    public static class Data {
 
         private LineNumberReader in;
         int[] prob = new int[5];
@@ -1354,6 +1378,8 @@ public class KapgelHeuristic {
                         req[index][3]
                                 = Integer.parseInt(tokens.nextToken());
                     }//WHILE ENDS
+                
+                
                 } //FOR ENDS
             } //TRY ENDS
             catch (EOFException eof) {
@@ -1363,7 +1389,9 @@ public class KapgelHeuristic {
                         + e.toString());
             }//CATCH ENDS
         }//readRequest ends
-
+    
+    
+        
         private void closeFile() {
             try {
                 in.close();
@@ -1376,14 +1404,14 @@ public class KapgelHeuristic {
 
         public float[][] getCoo() {
             return (coo);
-        }
+                    }
 
         public int[][] getReq() {
             return (req);
         }
     } //CLASS Data ENDS
 
-    class Distance {
+    public static class Distance {
 
         protected float[][] dist;
         int sto;
@@ -1396,19 +1424,33 @@ public class KapgelHeuristic {
             dcoo = r.getCooMatrix();
             calculateDistance();
         }//Distance Constructur ends
-
+        
+        public static final double R = 6372.8;
+        
         public void calculateDistance() {
+            
             for (int s = 0; s < sto + 1; s++) {
-                dist[s][s] = 0;
+                dist[s][s] = 0; 
             }
+            
             for (int s1 = 0; s1 < sto + 1; s1++) {
                 for (int s2 = 0; s2 < s1; s2++) {
-                    dist[s1][s2]
-                            = (float) Math.sqrt((dcoo[s1][0] - dcoo[s2][0])
-                                    * (dcoo[s1][0] - dcoo[s2][0])
-                                    + (dcoo[s1][1] - dcoo[s2][1])
-                                    * (dcoo[s1][1] - dcoo[s2][1]));
+                    double dLat = Math.toRadians(dcoo[s2][1] - dcoo[s1][1]);
+                    double dLon = Math.toRadians(dcoo[s2][0] - dcoo[s1][0]);
+                    double lat1=Math.toRadians(dcoo[s1][1]);
+                    double lat2=Math.toRadians(dcoo[s1][1]);
+                    
+                    double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
+                    double c = R * 2 * Math.asin(Math.sqrt(a));
+                           dist[s1][s2] = (float) c;              
+//                    dist[s1][s2]
+//                            = (float) Math.sqrt((dcoo[s1][0] - dcoo[s2][0])
+//                                    * (dcoo[s1][0] - dcoo[s2][0])
+//                                    + (dcoo[s1][1] - dcoo[s2][1])
+//                                    * (dcoo[s1][1] - dcoo[s2][1]));
+                   
                 }//for ends
+                
             }//for ends
             for (int s1 = 0; s1 < sto + 1; s1++) {
                 for (int s2 = s1 + 1; s2 < sto + 1; s2++) {
@@ -1418,12 +1460,12 @@ public class KapgelHeuristic {
         }//calculateDistance ends
 //returnes distance between stop 1 and 2
 
-        public float getDistance(int cust1, int cust2) {
+        public float getDistance(int cust1, int cust2) {          
             return (dist[cust1][cust2]);
         }//getDistance ends
     }//Distance class ends
 
-    class Car {
+    public static class Car {
 
         int capacity, carno;
         String filename;
@@ -1447,7 +1489,7 @@ public class KapgelHeuristic {
         }
     }//Car class ends
 
-    class Chromo extends Request {
+    public static class Chromo extends Request {
 
         byte[][][] ind;
         int[][] sum;
